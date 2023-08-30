@@ -43,9 +43,9 @@ python
 ```
 
 ## Contributing
-We appreciate your contributions! In fact, we decided to open-source this simple script mainly to connect with others working on similar topics.
+We appreciate your contributions! In fact, we decided to open-source this simple script mainly to connect with others working on similar topics. Leave us a note in Discussions!
 
-### How to Contribute
+### How to Contribute to the Code
 Just open a PR or an Issue.
 Make sure to give some context, WHY this change is useful and HOW your need for the change came to be.
 Thank you!!
