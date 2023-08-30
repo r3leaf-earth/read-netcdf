@@ -8,13 +8,13 @@ If you are starting to work with .nc-files this is a good starting point for you
 
 ### Am I Looking at the Right Data?
 Climate Projection Data is a large field. If you are an end user, like me, you might want to keep searching for already processed datasets. For example: From climate projection data one can analyse heat days and heat waves, because they contain a maximum daily temperature. Someone has already done this analysis.
-
+TODO: add links here
 
 ## How to Run the Script
 Run information is located at the beginning of the script itself. Check "Prerequisites" and "Usage". 
 
-## What's up with that File 'variables_values.md'?
-It contains some information about the structure of the data in the .nc file. 
+## What's up with that File 'variables_values_info.md'?
+It contains some information about the structure of the data in the .nc file.
 You can reproduce the outputs (or get different ones) with the steps below.
 
 Since CORDEX-data have a standardized structure, you might get the same responses from your .nc-file.
