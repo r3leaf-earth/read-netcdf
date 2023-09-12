@@ -20,21 +20,7 @@
 #     2006-05-16    14.8754 °C
 #     ...
 #
-# Prerequisites:
-# 	* you need an .nc-file, from the CORDEX. You can download one at Copernicus' Climate Data Store
-#     * create a free account. Logged in, make selections in the form below (link)
-#       * monthly data is recommended for testing, since it is smaller than daily data
-#       * choose variable "2m air temperature" (called 'tas' in the dataset to download)
-#     * Submit the form, download the file and unzip it
-#     * https://cds.climate.copernicus.eu/cdsapp#!/dataset/projections-cordex-domains-single-levels?tab=form
-#	* pip install -r requirements.txt
-#   * change this script, lines to change are marked with "<---"
-#	  * change filename to your downloaded .nc-file
-#     * change the path or place it in the same location as this script
-#     * change the location to the one you are interested in (lat, lon coordinates)
-#
-# Usage:
-# 	python read_tas.py
+# Prerequisites & Usage see README.md
 #
 #############################################################
 import os
