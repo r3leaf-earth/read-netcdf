@@ -7,7 +7,7 @@ The variable read is the daily mean temperature 2m above the ground level, short
 If you are starting to work with .nc-files this is a good starting point for you.
 
 ### Am I Working with the Right Data?
-Climate Projection Data is a large field. If you are an end user, like me, you might want to keep searching for already processed datasets. Someone has already done the analysis you need.
+Climate Projection Data is a large field. If you are an end user, like me, you might want to keep searching for already processed datasets. Someone has already done the analysis you need. For example: From climate projection data one can analyse heat days and heat waves, because they contain a maximum daily temperature. Someone has already done this analysis, there is a heatwave dataset. See for example [this gist](https://gist.github.com/mueller-fr/44da1d02aecae0fc79159a503b5efa20)
 The "Deutscher Wetterdienst" has some good [advice about using climate projection data](https://www.dwd.de/DE/klimaumwelt/klimaforschung/klimaprojektionen/fuer_deutschland/fuer_dtld_nutzungshinweis_node.html;jsessionid=D1A87E60A29B9CBDEB44F0D498D0A079.live31084) on their page (in german). The first 3 points are:
 1. Look for the information that suits your tasks and needs
 2. Don't use only ONE dataset
