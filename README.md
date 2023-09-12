@@ -1,7 +1,7 @@
 # read-cordex-netcdf
-The script 'read_tas.py' reads variables from a netCDF file which belongs to climate models CORDEX.
+This is a parser for netcdf-files that store climate projection data (long term forecasts). 
 
-The variable read is the daily mean temperature 2m above the ground level, short 'tas'.
+The script 'read_tas.py' reads from a netCDF file which belongs to climate models CORDEX. The variable read is the daily mean temperature 2m above the ground level, short 'tas'.
 
 ## For whom?
 If you are starting to work with .nc-files this is a good starting point for you.
