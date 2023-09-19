@@ -48,10 +48,10 @@ It depends on the query.
 python
 ```
 
-3. Import netCDF and your file. Replace 'path_to_file_and_name.nc' with your filename and location
+3. Import netCDF4 and your file. Replace 'path_to_file_and_name.nc' with your filename and location
 ```python
->>> import netCDF
->>> dataset = netCDF.Dataset('path_to_file_and_name.nc')
+>>> import netCDF4
+>>> dataset = netCDF4.Dataset('path_to_file_and_name.nc')
 ```
 
 4. Then, try the commands from 'variables_values.md'
