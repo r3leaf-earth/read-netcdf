@@ -1,5 +1,7 @@
-# read-cordex-netcdf
-This is a parser for netcdf-files that store climate projection data (long term forecasts). 
+# read-netcdf
+This is a parser for netcdf-files that store climate projection data (long term forecasts) for Europe. It currently supports
+.nc-files from CORDEX climate models regarding the variable 'tas' (average daily temperature) and .nc-files from 
+a "Heatwaves" dataset and a "Temperature Statistics dataset"
 
 The script 'read_tas.py' reads from a netCDF file which belongs to climate models CORDEX. The variable read is the daily mean temperature 2m above the ground level, short 'tas'.
 
