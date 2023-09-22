@@ -3,6 +3,9 @@ This is a parser for netcdf-files that store climate projection data (long term 
 
 The script 'read_tas.py' reads from a netCDF file which belongs to climate models CORDEX. The variable read is the daily mean temperature 2m above the ground level, short 'tas'.
 
+The script 'read_heatwaves_or_temperature_stats.py' works with netCDF files from 2 datasets, see header comment in 
+script. This README is written for the script 'read_tas.py'.
+
 ## For whom?
 If you are starting to work with .nc-files this is a good starting point for you.
 
@@ -34,7 +37,8 @@ The "Deutscher Wetterdienst" has some good [advice about using climate projectio
 
 ## What's up with that File 'variables_values_info.md'?
 It contains some information about the structure of the data in the .nc file.
-You can reproduce the outputs (or get different ones) with the steps below.
+You can reproduce the outputs (or get different ones) with the steps below, alternatively check out 
+'explore_netCDF_dataset.py'.
 
 Since CORDEX-data have a standardized structure, you might get the same responses from your .nc-file.
 

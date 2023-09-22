@@ -1,8 +1,11 @@
 # READ HEATWAVES NETCDF ##################
-# 
+#
+# Note: Works for .nc-files from both "Heat waves and cold spells in Europe derived from climate projections" and
+#       "Temperature statistics for Europe derived from climate projections"
+#
 # Summary:
 #   * reads a netCDF-file into a netCDF4.dataset
-# 	* finds the closest grid point for the lat-lon coordinates (50., 11.799) from a given heatwaves-netCDF file
+# 	* finds the closest grid point for the lat-lon coordinates from a given heatwaves-netCDF file
 #	* reads the variable, e.g. HWD_EU_climate, heatwave days in the climate definition of a heat day
 #   * converts the time points from the file to python datetimes
 #   * prints the desired coordinates and their closest grid point
@@ -32,7 +35,7 @@
 #	  * if you wish, change the years to be printed out
 #
 # Usage:
-# 	python read_heatwaves_netcdf.py /path/to/HWD_EU_end_of_filename.nc
+# 	python read_heatwaves_or_temperature_stats.py /path/to/HWD_EU_end_of_filename.nc "50.,11.799"
 #
 #############################################################
 
@@ -96,7 +99,7 @@ heat_days = heat_days_many_decimal_places.round(1)
 # TIME
 times = dataset.variables['time'][:]
 # print(times)
-date_zero_of_dataset = date(1986, 6, 6)  # there is no given day, just the year, I chose Jun 6th
+date_zero_of_dataset = date(1986, 6, 1)  # there is no given day, just the year, I chose Jun 1st, because it is used in temperature statistics dataset
 
 for i, number_of_days in enumerate(heat_days):
     date = date_zero_of_dataset + relativedelta(years=i)
