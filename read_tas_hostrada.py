@@ -66,8 +66,11 @@ def getclosest_gridpoints_indices(lats, lons, desired_lat, desired_lon):
     return np.unravel_index(minindex_flattened, lats.shape)
 
 
-location_lat = 50.000       # <--- change to your desired location latitude, here
-location_lon = 11.799       # <--- change to your desired location longitude, here
+location_lat = 50.9380       # <--- change to your desired location latitude, here
+location_lon = 6.9572      # <--- change to your desired location longitude, here
+
+# Berlin Alexnderplatz 52.52165/13.41144
+# Cologne 50.9380/6.9572
 
 print("Searching grid point for location: lat: ", location_lat, ", lon: ", location_lon)
 grid_lat_index, grid_lon_index = getclosest_gridpoints_indices(latvals, lonvals, location_lat, location_lon)
@@ -75,12 +78,14 @@ print("Closest grid point found is:", lat[grid_lat_index, grid_lon_index], lon[g
 
 # THE MAIN VARIABLE: TAS, TEMPERATURE
 
+print("reading tas...")
 tas = dataset.variables['tas']
 # Read value out of the netCDF file for temperature, all days, one location (closest grid point)
+print("...for found gridpoint...")
 tas_degC = tas[:, grid_lat_index, grid_lon_index]
 
 # DATE
-
+print("reading times...")
 ds_times = dataset.variables['time'][:]
 # print(ds_times)
 
@@ -89,25 +94,32 @@ ds_times = dataset.variables['time'][:]
 # december_1949 = date(1949, 12, 1)
 december_1949 = datetime(1949, 12, 1, 0, 0)
 
-
+# OLD
 def get_time_from_dataset_as_date(index):
     days_after_1949 = ds_times[index]
     time_since_1949 = timedelta(days=days_after_1949)
     return december_1949 + time_since_1949
 
+# NEW
 
+
+def get_time_from_dataset_as_date_nd(ds_times):
+    days_after_1949 = ds_times
+    time_since_1949 = timedelta(days=days_after_1949)
+    return december_1949 + time_since_1949
 
 # PRINT DATE WITH ITS PREDICTED TEMPERATURE
 
-for i, temperature in enumerate(tas_degC):
+# for i, temperature in enumerate(tas_degC):
 
-    time_point = get_time_from_dataset_as_date(i)
-    print(time_point, "\t", '%7.4f %s' % (temperature, "°C"))
+    # time_point = get_time_from_dataset_as_date(i)
+    # print(time_point, "\t", '%7.4f %s' % (temperature, "°C"))
 
 # print('%7.4f %s' % (tas_k, tas.units))
 
 x = np.arange(0, 31, 1/24)
 plot = plt.plot(x, tas_degC)
-print(plot)
-fig = plt.figure()
+# fig = plt.figure()
+plt.axhline(20, color='blue', lw=1)
+plt.axhline(30, color='red', lw=1)
 plt.show()
