@@ -66,11 +66,12 @@ def getclosest_gridpoints_indices(lats, lons, desired_lat, desired_lon):
     return np.unravel_index(minindex_flattened, lats.shape)
 
 
-location_lat = 50.9380       # <--- change to your desired location latitude, here
-location_lon = 6.9572      # <--- change to your desired location longitude, here
+location_lat = 51.35618      # <--- change to your desired location latitude, here
+location_lon = 12.41687      # <--- change to your desired location longitude, here
 
 # Berlin Alexnderplatz 52.52165/13.41144
 # Cologne 50.9380/6.9572
+# Leipyig Loebauer  51.35618/12.41687
 
 print("Searching grid point for location: lat: ", location_lat, ", lon: ", location_lon)
 grid_lat_index, grid_lon_index = getclosest_gridpoints_indices(latvals, lonvals, location_lat, location_lon)
@@ -108,18 +109,26 @@ def get_time_from_dataset_as_date_nd(ds_times):
     time_since_1949 = timedelta(days=days_after_1949)
     return december_1949 + time_since_1949
 
-# PRINT DATE WITH ITS PREDICTED TEMPERATURE
+# PRINT DATE WITH ITS PREDICTED TEMPERATURE AND WRITE TO FILE
 
-# for i, temperature in enumerate(tas_degC):
 
-    # time_point = get_time_from_dataset_as_date(i)
-    # print(time_point, "\t", '%7.4f %s' % (temperature, "°C"))
+with open("out/hostrada.txt", 'a') as outfile:
+    for i, temperature in enumerate(tas_degC):
+
+        time_point = get_time_from_dataset_as_date(i)
+        # print(time_point, "\t", '%7.4f %s' % (temperature, "°C"))
+
+        temperature = round(temperature,1)
+        datetime_temperature = f"{time_point};{temperature}\n"
+        #print(datetime_temperature)
+        outfile.write(datetime_temperature)
+
 
 # print('%7.4f %s' % (tas_k, tas.units))
 
-x = np.arange(0, 31, 1/24)
-plot = plt.plot(x, tas_degC)
-# fig = plt.figure()
-plt.axhline(20, color='blue', lw=1)
-plt.axhline(30, color='red', lw=1)
-plt.show()
+# x = np.arange(0, 31, 1/24)
+# plot = plt.plot(x, tas_degC)
+# # fig = plt.figure()
+# plt.axhline(20, color='blue', lw=1)
+# plt.axhline(30, color='red', lw=1)
+# plt.show()
