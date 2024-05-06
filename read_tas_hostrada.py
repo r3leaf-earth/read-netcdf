@@ -95,16 +95,22 @@ ds_times = dataset.variables['time'][:]
 # december_1949 = date(1949, 12, 1)
 december_1949 = datetime(1949, 12, 1, 0, 0)
 
+
 # OLD
 def get_time_from_dataset_as_date(index):
     days_after_1949 = ds_times[index]
     time_since_1949 = timedelta(days=days_after_1949)
     return december_1949 + time_since_1949
 
+
 # NEW
-
-
 def get_time_from_dataset_as_date_nd(ds_times):
+    """
+    Converts a vector of interger numbers from the dataset to a datetime vector
+    :param ds_times: an n-dimensional vector, nd-vector in the package numpy,
+    which contains the times of the dataset in days after Jan 1st 1949
+    :return:
+    """
     days_after_1949 = ds_times
     time_since_1949 = timedelta(days=days_after_1949)
     return december_1949 + time_since_1949
