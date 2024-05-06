@@ -23,10 +23,8 @@
 # Prerequisites & Usage see README.md
 #
 #############################################################
-import os
 import sys
 from datetime import date, timedelta, datetime
-import matplotlib.pyplot as plt
 import netCDF4
 import numpy as np
 
@@ -36,12 +34,6 @@ import numpy as np
 path_to_file = sys.argv[1]
 print("Converting file to dataset...")
 dataset = netCDF4.Dataset(path_to_file, 'r')
-
-# GET THE FILE
-# print("Converting file to dataset...")
-# path_to_file = os.getcwd()      # <--- change the path here, unless the .nc-file is in the same directory as this script
-# filename = 'tas_EUR-11_MPI-M-MPI-ESM-LR_rcp45_r1i1p1_MPI-CSC-REMO2009_v1_mon_200601-201012.nc'    # <--- change filename
-# dataset = netCDF4.Dataset(path_to_file + '/' + filename, 'r')
 
 # GEO LOCATION
 print("Reading lat and lon values from dataset...")
@@ -71,70 +63,45 @@ location_lon = 12.41687      # <--- change to your desired location longitude, h
 
 # Berlin Alexnderplatz 52.52165/13.41144
 # Cologne 50.9380/6.9572
-# Leipyig Loebauer  51.35618/12.41687
+# Leipzig Loebauer  51.35618/12.41687
 
 print("Searching grid point for location: lat: ", location_lat, ", lon: ", location_lon)
 grid_lat_index, grid_lon_index = getclosest_gridpoints_indices(latvals, lonvals, location_lat, location_lon)
 print("Closest grid point found is:", lat[grid_lat_index, grid_lon_index], lon[grid_lat_index, grid_lon_index])
 
-# THE MAIN VARIABLE: TAS, TEMPERATURE
+# THE MAIN VARIABLE
+filename = path_to_file.split("/")[-1]
+words_in_filename = filename.split("_")
+climate_variable_name = words_in_filename[0]
 
-print("reading tas...")
-tas = dataset.variables['tas']
+print("Main variable name is: ", climate_variable_name)
+climate_variable = dataset.variables[climate_variable_name]
 # Read value out of the netCDF file for temperature, all days, one location (closest grid point)
 print("...for found gridpoint...")
-tas_degC = tas[:, grid_lat_index, grid_lon_index]
+climate_variable_for_location = climate_variable[:, grid_lat_index, grid_lon_index]
 
 # DATE
 print("reading times...")
-ds_times = dataset.variables['time'][:]
-# print(ds_times)
+ds_times = dataset.variables['time']
+times_as_dates = netCDF4.num2date(ds_times[:], ds_times.units, ds_times.calendar)
 
-# unit of 'time' in the dataset is: days since 1949-12-01 00:00:00
-# create the date_zero of the dataset as date
-# december_1949 = date(1949, 12, 1)
-december_1949 = datetime(1949, 12, 1, 0, 0)
-
-
-# OLD
-def get_time_from_dataset_as_date(index):
-    days_after_1949 = ds_times[index]
-    time_since_1949 = timedelta(days=days_after_1949)
-    return december_1949 + time_since_1949
-
-
-# NEW
-def get_time_from_dataset_as_date_nd(ds_times):
-    """
-    Converts a vector of interger numbers from the dataset to a datetime vector
-    :param ds_times: an n-dimensional vector, nd-vector in the package numpy,
-    which contains the times of the dataset in days after Jan 1st 1949
-    :return:
-    """
-    days_after_1949 = ds_times
-    time_since_1949 = timedelta(days=days_after_1949)
-    return december_1949 + time_since_1949
 
 # PRINT DATE WITH ITS PREDICTED TEMPERATURE AND WRITE TO FILE
 
+with open("out/hostrada.csv", 'a+') as outfile:
+    # outfile.write("time;" + climate_variable_name + "\n")
 
-with open("out/hostrada.txt", 'a') as outfile:
-    for i, temperature in enumerate(tas_degC):
+    for i, climate_var in enumerate(climate_variable_for_location):
 
-        time_point = get_time_from_dataset_as_date(i)
+        time_point = times_as_dates[i]
         # print(time_point, "\t", '%7.4f %s' % (temperature, "°C"))
 
-        temperature = round(temperature,1)
-        datetime_temperature = f"{time_point};{temperature}\n"
+        climate_var = round(climate_var, 1)
+        datetime_climateVar = f"{time_point};{climate_var}\n"
         #print(datetime_temperature)
-        outfile.write(datetime_temperature)
+        outfile.write(datetime_climateVar)
+
 
 
 # print('%7.4f %s' % (tas_k, tas.units))
 
-# x = np.arange(0, 31, 1/24)
-# plot = plt.plot(x, tas_degC)
-# # fig = plt.figure()
-# plt.axhline(20, color='blue', lw=1)
-# plt.axhline(30, color='red', lw=1)
-# plt.show()

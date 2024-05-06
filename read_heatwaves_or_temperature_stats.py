@@ -86,6 +86,7 @@ print("Searching grid point for location: ", location_lat, location_lon)
 grid_lat_index, grid_lon_index = getclosest_gridpoints_indices(latvals, lonvals, location_lat, location_lon)
 print("Closest grid point found is:", lat[grid_lat_index].round(1), lon[grid_lon_index].round(1))
 
+# TODO: this should be a utils function
 # HWD_EU_climate(time,lat,lon)
 filename = path_to_file.split("/")[-1]
 words_in_filename = filename.split("_")
