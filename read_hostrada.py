@@ -4,9 +4,7 @@
 #
 # Summary:
 #   * reads a netCDF-file into a netCDF4.dataset
-# 	* finds the closest grid point for the lat-lon coordinates (50., 11.799) from a given CORDEX-netCDF file for
-#     the variable tas (mean daily temperature)
-#   * converts tas values in Kelvin to degrees Celsius (only the ones for the given coordinate)
+# 	* finds the closest grid point for the lat-lon coordinates (50., 11.799)
 #   * converts the time points from the file to python datetimes
 #   * prints the grid point coordinates, and the dates and tempurates for that gridpoint, starting with:
 #     Converting file to  dataset...
@@ -23,17 +21,23 @@
 # Prerequisites & Usage see README.md
 #
 #############################################################
+import os.path
 import sys
-from datetime import date, timedelta, datetime
 import netCDF4
 import numpy as np
 
 
 # GET THE FILE
-
 path_to_file = sys.argv[1]
 print("Converting file to dataset...")
 dataset = netCDF4.Dataset(path_to_file, 'r')
+
+# THE MAIN VARIABLE
+filename = path_to_file.split("/")[-1]
+words_in_filename = filename.split("_")
+climate_variable_name = words_in_filename[0]
+print("Main variable name is: ", climate_variable_name)
+climate_variable = dataset.variables[climate_variable_name]
 
 # GEO LOCATION
 print("Reading lat and lon values from dataset...")
@@ -69,14 +73,9 @@ print("Searching grid point for location: lat: ", location_lat, ", lon: ", locat
 grid_lat_index, grid_lon_index = getclosest_gridpoints_indices(latvals, lonvals, location_lat, location_lon)
 print("Closest grid point found is:", lat[grid_lat_index, grid_lon_index], lon[grid_lat_index, grid_lon_index])
 
-# THE MAIN VARIABLE
-filename = path_to_file.split("/")[-1]
-words_in_filename = filename.split("_")
-climate_variable_name = words_in_filename[0]
 
-print("Main variable name is: ", climate_variable_name)
-climate_variable = dataset.variables[climate_variable_name]
-# Read value out of the netCDF file for temperature, all days, one location (closest grid point)
+# Read value out of the netCDF file for temperature*, all days, one location (closest grid point)
+# *temperature or another climate variable
 print("...for found gridpoint...")
 climate_variable_for_location = climate_variable[:, grid_lat_index, grid_lon_index]
 
@@ -86,13 +85,20 @@ ds_times = dataset.variables['time']
 times_as_dates = netCDF4.num2date(ds_times[:], ds_times.units, ds_times.calendar)
 
 
-# PRINT DATE WITH ITS PREDICTED TEMPERATURE AND WRITE TO FILE
+# (PRINT) DATE WITH ITS PREDICTED TEMPERATURE (or other climate variable) AND WRITE TO FILE
 
-with open("out/hostrada.csv", 'a+') as outfile:
-    # outfile.write("time;" + climate_variable_name + "\n")
+# if newfile write header, therefore:
+path_to_outfile = "out/hostrada.csv"
+exists = os.path.exists(path_to_outfile)
+is_newfile = not exists
+
+with open(path_to_outfile, 'a+') as outfile:
+    print("Writing to file ", path_to_outfile)
+    if is_newfile:
+        # write column headers
+        outfile.write("time;" + climate_variable_name + "\n")
 
     for i, climate_var in enumerate(climate_variable_for_location):
-
         time_point = times_as_dates[i]
         # print(time_point, "\t", '%7.4f %s' % (temperature, "°C"))
 
@@ -100,8 +106,3 @@ with open("out/hostrada.csv", 'a+') as outfile:
         datetime_climateVar = f"{time_point};{climate_var}\n"
         #print(datetime_temperature)
         outfile.write(datetime_climateVar)
-
-
-
-# print('%7.4f %s' % (tas_k, tas.units))
-
