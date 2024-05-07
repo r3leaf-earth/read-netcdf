@@ -1,18 +1,17 @@
-import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 
-#dataframe = pd.read_csv("out/try.csv", sep=";", header=None, names=["time", "temperature"])
-dataframe = pd.read_csv("out/try.csv", sep=";", header=None, names=["time", "temperature_year",
-                                                                    "temperature_summer", "temperature_winter"])
+# dataframe = pd.read_csv("out/try.csv", sep=";", header=None, names=["time", "temperature_year",
+#                                                                    "temperature_summer", "temperature_winter"])
+dataframe = pd.read_csv("out/try.csv", sep=";")
 
 
 dataframe.plot(kind='line',
                x='time',
-               y=["temperature_year",
-                  "temperature_summer",
-                  "temperature_winter"],
-               color=['pink','red', 'blue'],
+               y=["temperature_Jahr",
+                  "temperature_Somm",
+                  "temperature_Wint"],
+               color=['pink', 'red', 'blue'],
                lw=1
                )
 plt.title('TRY 2045, Loebauer 46')
