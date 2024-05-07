@@ -4,21 +4,36 @@
 #
 # Summary:
 #   * reads a netCDF-file into a netCDF4.dataset
+#   * reads the main climate variable from the file name due to Hostrada standard file names
 # 	* finds the closest grid point for the lat-lon coordinates (50., 11.799)
-#   * converts the time points from the file to python datetimes
-#   * prints the grid point coordinates, and the dates and tempurates for that gridpoint, starting with:
-#     Converting file to  dataset...
-#     Reading lat and lon values from dataset...
-#     Searching grid point for location: 50.000 11.799
-#     Closest grid point found is: 50.030807 11.750615
-#     2006-01-16    -6.1835 °C
-#     2006-02-15    -0.2708 °C
-#     2006-03-16     4.2862 °C
-#     2006-04-16    10.5501 °C
-#     2006-05-16    14.8754 °C
-#     ...
+#   * reads the climate variable for the grid point
+#   * reads the dataset's time points and converts them to datetimes
+#   * writes time and climate variable into a csv-file, separator ";", e.g.
+#     * outfile: out/hostrada.csv , climate variable: uhi
+#         time;uhi
+#         2023-09-01 00:00:00;2.0
+#         2023-09-01 01:00:00;2.1
+#         2023-09-01 02:00:00;2.1
+#         2023-09-01 03:00:00;2.2
+#         2023-09-01 04:00:00;2.1
+#         2023-09-01 05:00:00;1.9
+#         2023-09-01 06:00:00;1.7
+#         2023-09-01 07:00:00;1.4
+#         2023-09-01 08:00:00;1.0
+#         2023-09-01 09:00:00;0.7
+#         ...
 #
-# Prerequisites & Usage see README.md
+# Prerequisites:
+#   * a file from HOSTRADA: https://opendata.dwd.de/climate_environment/CDC/grids_germany/hourly/hostrada/
+#     * has been downloaded
+#     * which has not been renamed
+#
+#
+# Usage:
+#   * see README for how to install requirements and venv
+#   * run with replaced path to downloaded HOSTRADA file
+#     `python read_hostrada.py "path/to/uhi_1hr_HOSTRADA-v1-0_BE_gn_2023050100-2023053123.nc"`
+#   * see csv file and if you want, plot it with `python plot_hostrada_from_csv.py`
 #
 #############################################################
 import os.path
@@ -73,7 +88,7 @@ print("Searching grid point for location: lat: ", location_lat, ", lon: ", locat
 grid_lat_index, grid_lon_index = getclosest_gridpoints_indices(latvals, lonvals, location_lat, location_lon)
 print("Closest grid point found is:", lat[grid_lat_index, grid_lon_index], lon[grid_lat_index, grid_lon_index])
 
-
+# CLIMATE VARIABLE
 # Read value out of the netCDF file for temperature*, all days, one location (closest grid point)
 # *temperature or another climate variable
 print("...for found gridpoint...")
