@@ -52,12 +52,11 @@ path_to_file = sys.argv[1]
 print("Converting file to dataset...")
 dataset = netCDF4.Dataset(path_to_file, 'r')
 
-
 # # GEO LOCATION
 
 coordinates = sys.argv[2].split(',')
-location_lat = float(coordinates[0])    # <--- change to your desired location latitude, here
-location_lon = float(coordinates[1])        # <--- change to your desired location longitude, here
+location_lat = float(coordinates[0])  # <--- change to your desired location latitude, here
+location_lon = float(coordinates[1])  # <--- change to your desired location longitude, here
 
 # print("Reading lat and lon values from dataset...")
 lat, lon = dataset.variables['lat'], dataset.variables['lon']
@@ -65,6 +64,7 @@ lat, lon = dataset.variables['lat'], dataset.variables['lon']
 # extract lat/lon values (in degrees) to numpy arrays
 latvals = lat[:]
 lonvals = lon[:]
+
 
 # print("lat====================================== \n", latvals)
 # print("lon====================================== \n", lonvals)
@@ -100,11 +100,12 @@ heat_days = heat_days_many_decimal_places.round(1)
 # TIME
 times = dataset.variables['time'][:]
 # print(times)
-date_zero_of_dataset = date(1986, 6, 1)  # there is no given day, just the year, I chose Jun 1st, because it is used in temperature statistics dataset
+date_zero_of_dataset = date(1986, 6,
+                            1)
+# there is no given day, just the year, I chose Jun 1st, because it is used in temperature statistics dataset
 
 for i, number_of_days in enumerate(heat_days):
     date = date_zero_of_dataset + relativedelta(years=i)
     year = date.year
     if year % 5 == 0 and year % 10 != 0:
         print(year, "\t", number_of_days)
-

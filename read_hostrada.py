@@ -114,7 +114,6 @@ print("reading times...")
 ds_times = dataset.variables['time']
 times_as_dates = netCDF4.num2date(ds_times[:], ds_times.units, ds_times.calendar)
 
-
 # WRITE TO FILE (or PRINT) DATE WITH ITS PREDICTED TEMPERATURE (or other climate variable)
 # if newfile write header, therefore:
 exists = os.path.exists(path_to_outfile)
@@ -132,5 +131,5 @@ with open(path_to_outfile, 'a+') as outfile:
 
         climate_var = round(climate_var, 1)
         datetime_climateVar = f"{time_point};{climate_var}\n"
-        #print(datetime_temperature)
+        # print(datetime_temperature)
         outfile.write(datetime_climateVar)
