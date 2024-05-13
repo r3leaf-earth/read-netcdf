@@ -31,10 +31,3 @@ plt.minorticks_on()
 
 plt.show()
 
-# x = np.arange(0, 31, 1/24)
-# y = np.arange(0, 31, 1/24)
-#
-# plot = plt.plot(x, y)
-# fig = plt.figure()
-
-# plt.show()

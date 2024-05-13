@@ -1,11 +1,9 @@
-import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 
 dataframe = pd.read_csv("out/hostrada.csv", sep=";")
 
 print(dataframe)
-
 
 dataframe.plot(kind='line',
                x='time',
@@ -15,7 +13,7 @@ dataframe.plot(kind='line',
                )
 plt.title('Hostr-UHI 2023, Loebauer 46')
 
-# add lines at 20 degrees and at 30 degrees celsius
+# add lines at 20 degrees and at 30 degrees celsius (useful for climate variable tas)
 #plt.axhline(20, color='blue', lw=0.5)
 # plt.axhline(30, color='red', lw=0.5)
 plt.axhline(3, color='gray', lw=0.5)
@@ -25,20 +23,8 @@ plt.axhline(3, color='gray', lw=0.5)
 # plt.axvline(4380, color='lightgray', lw=0.5)
 # plt.axvline(6570, color='lightgray', lw=0.5)
 # plt.ylabel('Temperature [°C]')
-plt.xlabel('Date and Time [mm-dd-hh]')
+plt.xlabel('Date and Time [YYYY-MM-DD hh:mm:ss]')
 plt.minorticks_on()
 # plt.grid(True)
 
 plt.show()
-
-# with open("out/test.txt", 'a') as outfile:
-#    outfile.write("test")
-#
-#
-# x = np.arange(0, 31, 1/24)
-# y = np.arange(0, 31, 1/24)
-#
-# plot = plt.plot(x, y)
-# fig = plt.figure()
-
-# plt.show()
