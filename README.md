@@ -1,7 +1,10 @@
 # read-netcdf
-This is a parser for netcdf-files that store climate projection data (long term forecasts) for Europe. It currently supports
-.nc-files from CORDEX climate models regarding the variable 'tas' (average daily temperature) and .nc-files from 
-a "Heatwaves" dataset and a "Temperature Statistics dataset"
+This is a parser for netcdf-files that store climate projection data (long term forecasts) for Europe and historical data for Germany. It currently supports reading .nc-files from 4 datasets:
+
+  * **CORDEX** climate models regarding the variable 'tas' (average daily temperature) for Europe
+  * a **Heatwaves** and Cold Spells dataset for Europe
+  * a **Temperature Statistics** dataset for Europe
+  * **HOSTRADA**, historical data (until present, still updated) for Germany
 
 The script 'read_tas.py' reads from a netCDF file which belongs to climate models CORDEX. The variable read is the daily mean temperature 2m above the ground level, short 'tas'.
 
@@ -9,7 +12,8 @@ The script 'read_heatwaves_or_temperature_stats.py' works with netCDF files from
 script. This README is written for the script 'read_tas.py'.
 
 ## For whom?
-If you are starting to work with .nc-files this is a good starting point for you.
+If you are starting to work with .nc-files this is a good starting point for you. 
+If you just want a small piece of code to read from .nc-files, you will find it here, too.
 
 ### Am I Working with the Right Data?
 Climate Projection Data is a large field. If you are an end user, like me, you might want to keep searching for already processed datasets. Someone has already done the analysis you need. For example: From climate projection data one can analyse heat days and heat waves, because they contain a maximum daily temperature. Someone has already done this analysis, there is a heatwave dataset. See for example [this gist](https://gist.github.com/mueller-fr/44da1d02aecae0fc79159a503b5efa20).
