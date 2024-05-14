@@ -24,7 +24,6 @@
 #
 #############################################################
 import os
-from datetime import date, timedelta
 
 import netCDF4
 import numpy as np
@@ -69,7 +68,7 @@ grid_lat_index, grid_lon_index = getclosest_gridpoints_indices(latvals, lonvals,
 print("Closest grid point found is:", lat[grid_lat_index, grid_lon_index], lon[grid_lat_index, grid_lon_index])
 
 # THE MAIN VARIABLE: TAS, TEMPERATURE
-
+# TODO: read main variable from file name as in hostrada and heatwaves scipts
 tas = dataset.variables['tas']
 # Read value out of the netCDF file for temperature, all days, one location (closest grid point)
 tas_k = tas[:, grid_lat_index, grid_lon_index]

@@ -1,5 +1,3 @@
-import sys
-
 # infile_original_try = sys.argv[1]
 path_to_try_files = '../../data/try/TRY_513564124162_Loebauer/'
 try_files = ['TRY2045_513564124162_Jahr.dat', 'TRY2045_513564124162_Somm.dat', 'TRY2045_513564124162_Wint.dat']

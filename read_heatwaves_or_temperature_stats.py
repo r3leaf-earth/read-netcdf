@@ -38,10 +38,8 @@
 # 	python read_heatwaves_or_temperature_stats.py /path/to/HWD_EU_end_of_filename.nc "50.,11.799"
 #
 #############################################################
-
+import os
 import sys
-from datetime import date
-from dateutil.relativedelta import relativedelta
 
 import netCDF4
 import numpy as np
@@ -86,26 +84,50 @@ print("Searching grid point for location: ", location_lat, location_lon)
 grid_lat_index, grid_lon_index = getclosest_gridpoints_indices(latvals, lonvals, location_lat, location_lon)
 print("Closest grid point found is:", lat[grid_lat_index].round(1), lon[grid_lon_index].round(1))
 
-# TODO: this should be a utils function
-# HWD_EU_climate(time,lat,lon)
-filename = path_to_file.split("/")[-1]
-words_in_filename = filename.split("_")
-variable_name = "_".join(words_in_filename[0:3])
+
+def climate_variable_name_from_filename(path_to_nc_file):
+    filename_with_extension = path_to_nc_file.split("/")[-1]
+    filename = filename_with_extension.split(".")[0]
+    words_in_filename = filename.split("_")
+    climate_variable_name = "_".join(words_in_filename[0:3])
+    return filename, climate_variable_name
+
+
+infile_name, variable_name = climate_variable_name_from_filename(path_to_file)
 print(variable_name)
+path_to_outfile = "out/heatwaves_or_temp_stats_" + infile_name + ".csv"
+
+# HWD_EU_climate(time,lat,lon)
+
 heat = dataset.variables[variable_name][:]
 heat_days_many_decimal_places = heat[:, grid_lat_index, grid_lon_index].compressed()
 heat_days = heat_days_many_decimal_places.round(1)
 # print(heat_days)
 
-# TIME
-times = dataset.variables['time'][:]
-# print(times)
-date_zero_of_dataset = date(1986, 6,
-                            1)
-# there is no given day, just the year, I chose Jun 1st, because it is used in temperature statistics dataset
+# DATE
+print("reading times...")
+ds_times = dataset.variables['time']
+times_as_dates = netCDF4.num2date(ds_times[:], ds_times.units, ds_times.calendar)
+# print(times_as_dates[2].year)
 
-for i, number_of_days in enumerate(heat_days):
-    date = date_zero_of_dataset + relativedelta(years=i)
-    year = date.year
-    if year % 5 == 0 and year % 10 != 0:
-        print(year, "\t", number_of_days)
+# WRITE TO FILE (or PRINT) DATE WITH ITS PREDICTED TEMPERATURE (or other climate variable)
+# if newfile write header, therefore:
+exists = os.path.exists(path_to_outfile)
+is_newfile = not exists
+
+with open(path_to_outfile, 'a+') as outfile:
+    print("Writing to file ", path_to_outfile)
+    if is_newfile:
+        # write column headers
+        outfile.write("time; " + variable_name + "\n")
+
+    for i, number_of_days in enumerate(heat_days):
+        year = times_as_dates[i].year
+
+        number_of_days_pretty = '%7.1f' % number_of_days
+
+        line = f"{year};{number_of_days_pretty}\n"
+        outfile.write(line)
+
+        if year % 5 == 0 and year % 10 != 0:
+            print(year, "\t", number_of_days)
