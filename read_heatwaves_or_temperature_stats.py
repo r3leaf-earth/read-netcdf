@@ -124,9 +124,9 @@ with open(path_to_outfile, 'a+') as outfile:
     for i, number_of_days in enumerate(heat_days):
         year = times_as_dates[i].year
 
-        number_of_days_pretty = '%7.1f' % number_of_days
+        number_of_days_or_temperature_pretty = '%7.1f' % number_of_days
 
-        line = f"{year};{number_of_days_pretty}\n"
+        line = f"{year};{number_of_days_or_temperature_pretty}\n"
         outfile.write(line)
 
         if year % 5 == 0 and year % 10 != 0:

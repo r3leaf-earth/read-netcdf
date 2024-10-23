@@ -1,4 +1,4 @@
-netCDF4==1.6.5
+netCDF4==1.7.1.post1
 numpy==1.26.4
 python-dateutil==2.9.0.post0
 rioxarray==0.15.5
