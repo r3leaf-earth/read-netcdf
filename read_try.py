@@ -1,3 +1,4 @@
+import os
 # infile_original_try = sys.argv[1]
 path_to_try_files = '../../data/try/TRY_513564124162_Loebauer/'
 try_files = ['TRY2045_513564124162_Jahr.dat', 'TRY2045_513564124162_Somm.dat', 'TRY2045_513564124162_Wint.dat']
@@ -72,7 +73,9 @@ for i, row in enumerate(data_year):
     data_lines.append(line)
 
 # WRITE THE OUTFILE
-with open("out/try.csv", 'a') as outfile:
+path_to_outfile = "out/try.csv"
+os.makedirs(os.path.dirname(path_to_outfile), exist_ok=True)
+with open(path_to_outfile, 'a') as outfile:
     climate_variables = ";".join([climate_variable_name + "_Jahr", climate_variable_name + "_Somm", climate_variable_name + "_Wint"])
     outfile.write(outfile_column_headers + "\n")
     outfile.writelines(data_lines)

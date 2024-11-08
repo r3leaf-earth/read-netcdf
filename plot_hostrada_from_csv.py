@@ -7,7 +7,7 @@ print(dataframe)
 
 dataframe.plot(kind='line',
                x='time',
-               y='uhi',
+               y='tas',
                color='turquoise',
                lw=1
                )

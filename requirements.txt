@@ -3,3 +3,5 @@ numpy==1.26.4
 python-dateutil==2.9.0.post0
 rioxarray==0.15.5
 matplotlib==3.9.0rc2
+# because for some operating systems the plot does not show without
+PyQt6==6.7.1

@@ -1,15 +1,20 @@
 # read-netcdf
-This is a parser for netcdf-files that store climate projection data (long term forecasts) for Europe and historical data for Germany. It currently supports reading .nc-files from 4 datasets:
+This is a parser for netcdf-files storing climate data for Europe and Germany. It currently supports reading files from 5 datasets (4 are actually netCDF):
 
-  * **CORDEX** climate models regarding the variable 'tas' (average daily temperature) for Europe
-  * a **Heatwaves** and Cold Spells dataset for Europe
-  * a **Temperature Statistics** dataset for Europe
+  * Regional Climate Projections from **CORDEX** climate models regarding the variable 'tas' (average daily temperature) for Europe
+  * a **Heatwaves** and Cold Spells dataset for Europe (climate projections)
+  * a **Temperature Statistics** dataset for Europe (climate projections)
   * **HOSTRADA**, historical data (until present, still updated) for Germany
+  * TRY for Germany with a present and future representative year
 
-The script 'read_tas.py' reads from a netCDF file which belongs to climate models CORDEX. The variable read is the daily mean temperature 2m above the ground level, short 'tas'.
+The scripts named `read_...` reads from netCDF or other data files, which you have to download from climate data stores. See the section on [prerequisites](#Prerequisites) below for datasets from Copernicus Climate Data Store. NOTE, that they write to outfiles and usually append to them! This is useful for collecting data from monthly datafiles into one outfile containing the data for a whole year.
+
+Scripts names `plot_...` work with data which have to be prepared beforehand by running the respective `read...`-script. NOTE, that plots are evenly spaced on the x-axis rather than reading the x-values.
+
+Some scripts have further instructions as a header comment within the script.
 
 The script 'read_heatwaves_or_temperature_stats.py' works with netCDF files from 2 datasets, see header comment in 
-script. This README is written for the script 'read_tas.py'.
+script. This README is written for the script 'read_cordex_tas.py'.
 
 ## For whom?
 If you are starting to work with .nc-files this is a good starting point for you. 
@@ -39,7 +44,7 @@ The "Deutscher Wetterdienst" has some good [advice about using climate projectio
    * change the location to the one you are interested in (lat, lon coordinates)
 
 ### Usage:
-*	`python read_tas.py` 
+*	`python read_cordex_tas.py` 
 
 ## What's up with that File 'variables_values_info.md'?
 It contains some information about the structure of the data in the .nc file.

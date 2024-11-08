@@ -88,6 +88,8 @@ times_as_dates = netCDF4.num2date(ds_times[:], ds_times.units, ds_times.calendar
 exists = os.path.exists(path_to_outfile)
 is_newfile = not exists
 
+os.makedirs(os.path.dirname(path_to_outfile), exist_ok=True)
+
 with open(path_to_outfile, 'a+') as outfile:
     print("Writing to file ", path_to_outfile)
     if is_newfile:
