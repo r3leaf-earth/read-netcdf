@@ -18,7 +18,7 @@ class DerivedDataset:
         self.lats = dataset.variables['lat'][:]
         self.lons = dataset.variables['lon'][:]
 
-        self.dataset_times = dataset.variables['time'][:]
+        self.dataset_times = dataset.variables['time']
         self.dataset_variable = dataset.variables[main_variable][:]
 
 
@@ -57,7 +57,9 @@ class DerivedDataset:
         return pretty_coordinates
 
     def get_pretty_times(self):
-        return [1990, 1991, 1992]
+        ds_times = self.dataset_times
+        times_as_dates = netCDF4.num2date(ds_times[:], ds_times.units, ds_times.calendar)
+        return times_as_dates[-4:-1]
 
     def get_pretty_data(self, location):
         return [800.4, 900.3, 200.2]

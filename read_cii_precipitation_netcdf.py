@@ -13,9 +13,13 @@ dataset = DerivedDataset(path_to_file, main_variable=variable_name)
 
 
 # READ LOCATIONS FROM INPUT FILE (OR HARDCODE THEM HERE)
-#52.400882,13.055165
-desired_locations = [(52.40,13.06), (50.00,11.81)]
-
+# 54.09497,13.37462 Greifswald
+# 52.400882,13.055165 Potsdam
+# 51.368288/12.435543 Leipzig Heiterblickstrasse 42
+# 51.78195,11.14510 Harz
+# 49.009452/8.400044 Karlsruhe
+# 47.98036,7.90463 Freiburg???
+desired_locations = [(54.09,13.37), (52.40,13.06), (51.37,12.44), (51.78,11.15), (49.01,8.40)]
 
 # FIND CLOSEST GRID POINTS
 closest_grid_indices = dataset.find_closests_grid_points_indices(desired_locations)
@@ -27,7 +31,7 @@ for i, location in enumerate(desired_locations):
     print("Searching grid point for location: ", location,
       " --> found: ", found_grid_points[i])
 
-# READ DATA INTO DICTIONARY (for all 5 sample addresses)
+# READ DATA INTO DICTIONARY (for all sample addresses)
 location_time_data = {}
 dataset_times = dataset.get_pretty_times()
 location_time_data['time'] = dataset_times
@@ -66,6 +70,18 @@ with open(path_to_outfile, 'a+') as outfile:
 
     for line in lines:
         outfile.write(line)
+
+
+    # for i, number_of_days in enumerate(values_for_location_rounded):
+    #     year = times_as_dates[i].year
+    #
+    #     number_of_days_or_temperature_pretty = '%7.1f' % number_of_days
+    #
+    #     line = f"{year};{number_of_days_or_temperature_pretty}\n"
+    #     outfile.write(line)
+    #
+    #     if year % 5 == 0 and year % 10 != 0:
+    #         print(year, "\t", number_of_days)
 
 
 # Main Variable: prAdjust
