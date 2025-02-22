@@ -25,41 +25,30 @@ desired_locations = [(54.09,13.37), (52.40,13.06), (51.37,12.44), (51.78,11.15),
 closest_grid_indices = dataset.find_closests_grid_points_indices(desired_locations)
 found_grid_points = dataset.get_many_pretty_coordinates(index_tuple_list=closest_grid_indices, decimal_places=2)
 
-#todo replace with ennoyumerate
-# for i in range(len(desired_locations)):
 for i, location in enumerate(desired_locations):
     print("Searching grid point for location: ", location,
       " --> found: ", found_grid_points[i])
 
 # READ DATA INTO DICTIONARY (for all sample addresses)
-location_time_data = {}
+location_data = {}
+for indices in closest_grid_indices:
+    data = dataset.get_pretty_data(indices)
+    location_data[indices] = data
+
 dataset_times = dataset.get_pretty_times()
-location_time_data['time'] = dataset_times
 
-for location in found_grid_points:
-    data = dataset.get_pretty_data(location)
-    location_time_data[location] = data
-
-# PREPARE LINES FOR THE OUTPUT FILE... todo> check if ennoumerate soulution form other file is faster
-lines = []
-coloumn_headers = ';'.join(str(a) for a in location_time_data.keys())
-lines.append(coloumn_headers  + "\n")
-
-for i in range(len(dataset_times)):
-    values = []
-    for key in location_time_data:
-
-        each_locations_value = location_time_data[key][i]
-        values.append(each_locations_value)
-    line = ';'.join(str(a) for a in values) + "\n"
-    lines.append(line)
-
-
-# WRITE TO THE FILE
+# # PREPARE LINES FOR THE OUTPUT FILE
 infile_name_with_fileextension = path_to_file.split("/")[-1]
 infile_name = infile_name_with_fileextension.split(".")[0]
-path_to_outfile = "out/A_"+ infile_name + ".csv"
+path_to_outfile = "out/"+ infile_name + ".csv"
 
+locations_csv = ';'.join(str(a) for a in desired_locations)
+coloumn_headers = ';'.join(["time", locations_csv])
+
+yearly = "yearly" in infile_name
+monthly = "monthly" in infile_name
+
+# WRITE TO THE FILE
 os.makedirs(os.path.dirname(path_to_outfile), exist_ok=True)
 
 with open(path_to_outfile, 'a+') as outfile:
@@ -67,21 +56,32 @@ with open(path_to_outfile, 'a+') as outfile:
 
     outfile.write("Main Variable: " + variable_name + "\n")
     outfile.write("Name of data file: " + infile_name_with_fileextension + "\n")
+    outfile.write(coloumn_headers + "\n")
 
-    for line in lines:
+
+    for i, times_as_dates in enumerate(dataset_times):
+        time = ""
+        if yearly:
+            time = times_as_dates.year
+        elif monthly:
+            time = f"{times_as_dates.year}-{times_as_dates.month}"
+        else:
+            time = times_as_dates
+            print("No monthly or yearly input? check formatting options for time")
+
+        values = []
+        for key in location_data:
+            each_locations_value = location_data[key][i]
+            values.append(each_locations_value)
+        values_for_time = ';'.join(str(a) for a in values)
+
+        # number_of_days_or_temperature_pretty = '%7.1f' % number_of_days
+
+        line = f"{time};{values_for_time}\n"
         outfile.write(line)
 
-
-    # for i, number_of_days in enumerate(values_for_location_rounded):
-    #     year = times_as_dates[i].year
-    #
-    #     number_of_days_or_temperature_pretty = '%7.1f' % number_of_days
-    #
-    #     line = f"{year};{number_of_days_or_temperature_pretty}\n"
-    #     outfile.write(line)
-    #
-    #     if year % 5 == 0 and year % 10 != 0:
-    #         print(year, "\t", number_of_days)
+        if i < 5 or i > len(dataset_times) - 5:
+            print(time, "\t", values_for_time)
 
 
 # Main Variable: prAdjust

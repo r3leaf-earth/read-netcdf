@@ -59,7 +59,9 @@ class DerivedDataset:
     def get_pretty_times(self):
         ds_times = self.dataset_times
         times_as_dates = netCDF4.num2date(ds_times[:], ds_times.units, ds_times.calendar)
-        return times_as_dates[-4:-1]
+        return times_as_dates
 
-    def get_pretty_data(self, location):
-        return [800.4, 900.3, 200.2]
+    def get_pretty_data(self, grid_index):
+        values = self.dataset_variable
+        values_for_location_many_decimal_places = values[:, grid_index[0], grid_index[1]].compressed()
+        return values_for_location_many_decimal_places.round(1)
