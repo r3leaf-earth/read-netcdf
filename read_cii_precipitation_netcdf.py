@@ -1,3 +1,9 @@
+# Usage:
+# 	python read_cii_precipitation_netcdf.py /path/to/12_total_precipitation-reanalysis-yearly-grid-1940-2023-v1.0.nc tp
+#
+#############################################################
+
+
 import os
 import sys
 
@@ -7,7 +13,10 @@ from netcdf_dataset_commons import DerivedDataset
 path_to_file = sys.argv[1]
 
 # PREPARE THE DATASET
-variable_name = "prAdjust"
+variable_name = sys.argv[2]
+# possible values> prAdjust, tp, ...
+# todo: check and print message,maybe even printing the variable names to choose from in the currren dataset
+
 print("Converting file to dataset using main variable " + variable_name + "...")
 dataset = DerivedDataset(path_to_file, main_variable=variable_name)
 
