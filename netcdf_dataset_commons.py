@@ -14,12 +14,22 @@ class DerivedDataset:
         # PREPARE THE DATASET
         dataset = netCDF4.Dataset(path_to_file, 'r')
 
+        # CHECK the main variable
+        dataset_variables = dataset.variables.keys()
+        if main_variable not in dataset_variables:
+            print("Your main variable must match the dataset variables: ",
+                  dataset_variables)
+            print("Your current main variable:", main_variable)
+            print("ABORTING... Please run again with the correct variable appended.")
+            exit()
+
         # reading locations from the dataset
         self.lats = dataset.variables['lat'][:]
         self.lons = dataset.variables['lon'][:]
 
         self.dataset_times = dataset.variables['time']
         self.dataset_variable = dataset.variables[main_variable][:]
+        self.dataset_main_unit = dataset.variables[main_variable].units
 
 
     # a method to find the index of the grid point closest to the desired location
@@ -65,3 +75,6 @@ class DerivedDataset:
         values = self.dataset_variable
         values_for_location_many_decimal_places = values[:, grid_index[0], grid_index[1]].compressed()
         return values_for_location_many_decimal_places.round(1)
+
+    def get_dataset_main_unit(self):
+        return self.dataset_main_unit

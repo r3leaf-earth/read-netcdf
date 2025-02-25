@@ -14,8 +14,11 @@ path_to_file = sys.argv[1]
 
 # PREPARE THE DATASET
 variable_name = sys.argv[2]
-# possible values> prAdjust, tp, ...
-# todo: check and print message,maybe even printing the variable names to choose from in the currren dataset
+
+precipitation_variables = ["tp", "prAdjust", "data"]
+if variable_name not in precipitation_variables:
+    print("Your main variable must be one of ", precipitation_variables, ". It currently is: ", variable_name)
+    exit()
 
 print("Converting file to dataset using main variable " + variable_name + "...")
 dataset = DerivedDataset(path_to_file, main_variable=variable_name)
@@ -29,6 +32,8 @@ dataset = DerivedDataset(path_to_file, main_variable=variable_name)
 # 49.009452/8.400044 Karlsruhe
 # 47.98036,7.90463 Freiburg???
 desired_locations = [(54.09,13.37), (52.40,13.06), (51.37,12.44), (51.78,11.15), (49.01,8.40)]
+location_names = ["Greifswald", "Potsdam", "Leipzig Heiterblickstrasse 42", "Harz", "Karlsruhe"]
+
 
 # FIND CLOSEST GRID POINTS
 closest_grid_indices = dataset.find_closests_grid_points_indices(desired_locations)
@@ -53,6 +58,8 @@ path_to_outfile = "out/"+ infile_name + ".csv"
 
 locations_csv = ';'.join(str(a) for a in desired_locations)
 coloumn_headers = ';'.join(["time", locations_csv])
+location_line = ';'.join(location_names)
+unit = "[" + dataset.get_dataset_main_unit() + "]"
 
 yearly = "yearly" in infile_name
 monthly = "monthly" in infile_name
@@ -63,10 +70,11 @@ os.makedirs(os.path.dirname(path_to_outfile), exist_ok=True)
 with open(path_to_outfile, 'a+') as outfile:
     print("Writing to file ", path_to_outfile)
 
-    outfile.write("Main Variable: " + variable_name + "\n")
+    outfile.write("Main Variable: " + variable_name + " " + unit + "\n")
     outfile.write("Name of data file: " + infile_name_with_fileextension + "\n")
+    outfile.write("\n")
+    outfile.write(";" + location_line + "\n")
     outfile.write(coloumn_headers + "\n")
-
 
     for i, times_as_dates in enumerate(dataset_times):
         time = ""
