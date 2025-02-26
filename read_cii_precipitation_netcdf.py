@@ -1,8 +1,48 @@
+# READ PRECIPITATION NETCDF #
+#
+# Works for multiple locations and 4 precipitation variables.
+#
+# Note:
+#   Locations are hardcoded within the script. Also, it depends on another module within this repo. See imports.
+#   Change the locations to the ones you are interested in (lat, lon coordinates)
+#
+# Summary:
+#    * Reads precipitation variables from nc-files
+#    * writes them to a csv-file
+#
+# Dataset:
+#   Climate indicators for Europe from 1940 to 2100 derived from reanalysis and climate projections
+#   https://cds.climate.copernicus.eu/datasets/sis-ecde-climate-indicators
+#
+# Supported Variables (and their short names):
+#    * Total precipitation (tp for reanalysis, prAdjust for projections)
+#    * Maximum consecutive five-day precipitation (tp for reanalysis, prAdjust for projections)
+#    * Extreme precipitation total (data)
+#    * Frequency of extreme precipitation (data)
+
+# Output:
+#     Converting file to dataset using main variable 'data'...
+#     Searching grid point for location:  (54.09, 13.37)  --> found:  (54.0, 13.25)
+#     ...
+#     Searching grid point for location:  (49.01, 8.4)  --> found:  (49.0, 8.5)
+#     Writing to file  out/14_extreme_precipitation_total-reanalysis-monthly-grid-1940-2023-v1.csv
+#     1940-1   11.2;0.0;0.0;0.0;0.0
+#     1940-2   0.0;10.1;10.5;0.0;21.3
+#     1940-3   0.0;31.6;0.0;0.0;0.0
+#     1940-4   0.0;0.0;12.6;10.8;32.9
+#     ...
+#     2023-12          0.0;52.6;36.9;18.3;0.0
+#
+# Commandline user input:
+#    * path to datafile.nc
+#    * variable name (tp, prAdjust, data)
+#
 # Usage:
 # 	python read_cii_precipitation_netcdf.py /path/to/12_total_precipitation-reanalysis-yearly-grid-1940-2023-v1.0.nc tp
 #
 #############################################################
 
+# ToDO: update this. read addresses from locations.csv (already enriched with lat lon values)
 
 import os
 import sys
@@ -27,12 +67,12 @@ dataset = DerivedDataset(path_to_file, main_variable=variable_name)
 # READ LOCATIONS FROM INPUT FILE (OR HARDCODE THEM HERE)
 # 54.09497,13.37462 Greifswald
 # 52.400882,13.055165 Potsdam
-# 51.368288/12.435543 Leipzig Heiterblickstrasse 42
+# 51.368288/12.435543 Leipzig Heiterblick
 # 51.78195,11.14510 Harz
 # 49.009452/8.400044 Karlsruhe
 # 47.98036,7.90463 Freiburg???
 desired_locations = [(54.09,13.37), (52.40,13.06), (51.37,12.44), (51.78,11.15), (49.01,8.40)]
-location_names = ["Greifswald", "Potsdam", "Leipzig Heiterblickstrasse 42", "Harz", "Karlsruhe"]
+location_names = ["Greifswald", "Potsdam", "Leipzig Heiterblick", "Harz", "Karlsruhe"]
 
 
 # FIND CLOSEST GRID POINTS
@@ -100,20 +140,3 @@ with open(path_to_outfile, 'a+') as outfile:
         if i < 5 or i > len(dataset_times) - 5:
             print(time, "\t", values_for_time)
 
-
-# Main Variable: prAdjust
-# Name of data file: 12_precipitation_bla_bla_bla_rcp85
-# time; 50.0,11.8; next,loc; ...
-# 1950;  503.8; 600.6; ...
-# 1951;  621.7; 700.7
-# 1952;  649.5; 800.8
-# 1953;  695.9; 900.9
-# 1954;  584.3; 500.5; ...
-
-
-# unsanswered questions:
-#   - what, if I want to compare 2 rcps for one location in a plot?
-#     --> can someone do via excel for now
-#   - when do I need objects?
-#       - Dataset: main variable, rcp, time resolution (monthly...)
-#       - Location: address, town, postal code, lat, lon, shortname?

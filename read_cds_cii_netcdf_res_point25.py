@@ -1,44 +1,45 @@
-# READ CII for Europe derived from Reanalysis and Projections NETCDF ##################
-# ToDO: update this
+# READ PRECIPITATION FROM CII for Europe derived from Reanalysis and Projections NETCDF ##################
+#
+# Works for one give location and the hardcoded variable "prAdjust". If your datafile has another variable, please change it.
 #
 # Summary:
-#   * read addresses from locations.csv (already enriched with lat lon values)
-#   * finds closest grid points to the locations
-#   * collects their values into a file and
-#   * prints some output to stdout
-#
-#   * reads a netCDF-file into a netCDF4.dataset
+#   * finds closest grid points to the location
+#   * reads a netCDF-file into a netCDF4.dataset, reads location from the commandline
 # 	* finds the closest grid point for the lat-lon coordinates from a given heatwaves-netCDF file
 #   * uses hardcoded variable name"prAdjust"
 #   * converts the time points from the file to python datetimes
-#   * prints the desired coordinates and their closest grid point
-#   * prints the variable, e.g. HWD_EU_climate
-#   * prints the years with their respective number of heat days, prints for years ending in a 5 
+#   * collects the values into a file and
+#   * prints some output to stdout
+#
+# Dataset:
+#   Climate indicators for Europe from 1940 to 2100 derived from reanalysis and climate projections
+#   https://cds.climate.copernicus.eu/datasets/sis-ecde-climate-indicators/?tab=download
 #
 # Output:
-#    Converting file to dataset...
-#    Searching grid point for location: lat:  50.0 , lon:  11.799
-#    Closest grid point found is: 50.0 11.8
-#    HWD_EU_climate
-#    1995 	 1.5
-#    2005 	 2.1
-#    2015 	 2.9
-#    2025 	 2.6
-#    ...	 ...
-#    2085 	 5.1
+#     Converting file to dataset...
+#     Searching grid point for location:  50.0 11.0
+#     Closest grid point found is: 50.0 11.0
+#     prAdjust
+#     reading times...
+#     Writing to file  out/12_total_precipitation-projections-yearly-rcp_8_5-cclm4_8_17-mpi_esm_lr-r1i1p1-grid-v1.csv
+#     1955     880.7
+#     1965     707.1
+#     1975     835.7
+#     1985     880.0
+#     ...
+#     2095     1293.1
+
 #
 # Prerequisites:
-#     * install the libraries you do not have yet (netCDF4, numpy, ...)
-#     * you need an .nc-file, from "Heat Waves and Cold Spells". You can download one at Copernicus' Climate Data Store
-#     * create a free account. Logged in, make selections in the form below (link)
-#     * Submit the form, download the file and unzip it
-#     * https://cds.climate.copernicus.eu/cdsapp#!/dataset/sis-heat-and-cold-spells?tab=form
-#     * change this script
-#         * change the location to the one you are interested in (lat, lon coordinates)
+#     * install the libraries you do not have yet (netCDF4, numpy, ...), e.g. by
+#         * pip install -r requirements.txt
+#     * you need an .nc-file from the Dataset mentioned above. You can download one at Copernicus' Climate Data Store
+#         * create a free account. Logged in, make selections in the form (tab=download)
+#         * Submit the form, download the file and unzip it
 #	  * if you wish, change the years to be printed out
 #
 # Usage:
-# 	python read_heatwaves_or_temperature_stats.py /path/to/HWD_EU_end_of_filename.nc "50.,11.799"
+# 	python read_cds_cii_netcdf_res_point25.py /path/to/filename.nc "50.,11.799"
 #
 #############################################################
 import os
