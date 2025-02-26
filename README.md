@@ -1,11 +1,14 @@
 # read-netcdf
-This is a parser for netcdf-files storing climate data for Europe and Germany. It currently supports reading files from 5 datasets (4 are actually netCDF):
+This is a parser for files storing climate data for Europe and Germany. It currently supports reading files from 6 datasets (5 are actually netCDF, one fixed width text file). Datasources are Copernicus CDS (Climate Data Store) and the DWD (Deutscher Wetterdienst).
 
+Copernicus CDS:
   * Regional Climate Projections from **CORDEX** climate models regarding the variable 'tas' (average daily temperature) for Europe
   * a **Heatwaves** and Cold Spells dataset for Europe (climate projections)
   * a **Temperature Statistics** dataset for Europe (climate projections)
+  * a **Climate Indicators** dataset for Europe (reanalysis and climate projections) regarding precipitation variables
+DWD:
   * **HOSTRADA**, historical data (until present, still updated) for Germany
-  * TRY for Germany with a present and future representative year
+  * TRY for Germany with a present and future representative year (fixed width textfiles)
 
 The scripts named `read_...` reads from netCDF or other data files, which you have to download from climate data stores. See the section on [prerequisites](#Prerequisites) below for datasets from Copernicus Climate Data Store. NOTE, that they write to outfiles and usually append to them! This is useful for collecting data from monthly datafiles into one outfile containing the data for a whole year.
 
@@ -29,7 +32,7 @@ The "Deutscher Wetterdienst" has some good [advice about using climate projectio
 3. Climate Projection computations are not forecasts
 4. ...
 
-## How to Run the Script
+## How to Run the Script 'read_cordex_tas.py'
 ### Prerequisites:
 * you need an .nc-file, from the CORDEX. You can download one at Copernicus' Climate Data Store
    * create a free account. Logged in, make selections in the form below (link)
@@ -49,7 +52,7 @@ The "Deutscher Wetterdienst" has some good [advice about using climate projectio
 ## What's up with that File 'variables_values_info.md'?
 It contains some information about the structure of the data in the .nc file.
 You can reproduce the outputs (or get different ones) with the steps below, alternatively check out 
-'explore_netCDF_dataset.py'.
+'explore_netCDF_dataset.py' for an interactive session.
 
 Since CORDEX-data have a standardized structure, you might get the same responses from your .nc-file.
 
@@ -77,7 +80,7 @@ python
 ```
 
 ## Contributing
-We appreciate your contributions! In fact, we decided to open-source this simple script mainly to connect with others working on similar topics. Leave us a note in Discussions!
+We appreciate your contributions! In fact, we decided to open-source these simple scripts mainly to connect with others working on similar topics. Leave us a note in Discussions!
 
 ### How to Contribute to the Code
 Just open a PR or an Issue.
