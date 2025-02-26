@@ -24,15 +24,20 @@
 #
 #############################################################
 import os
-from datetime import date, timedelta
 
 import netCDF4
 import numpy as np
 
+# TO BE CHANGED BY USER, IF DESIRED
+path_to_outfile = "out/cordex.csv"
+
+location_lat = 50.000  # <--- change to your desired location latitude, here
+location_lon = 11.799  # <--- change to your desired location longitude, here
+
 # GET THE FILE
 print("Converting file to dataset...")
-path_to_file = os.getcwd()      # <--- change the path here, unless the .nc-file is in the same directory as this script
-filename = 'tas_EUR-11_MPI-M-MPI-ESM-LR_rcp45_r1i1p1_MPI-CSC-REMO2009_v1_mon_200601-201012.nc'    # <--- change filename
+path_to_file = os.getcwd()  # <--- change the path here, unless the .nc-file is in the same directory as this script
+filename = 'tas_EUR-11_MPI-M-MPI-ESM-LR_rcp45_r1i1p1_MPI-CSC-REMO2009_v1_mon_200601-201012.nc'  # <--- change filename
 dataset = netCDF4.Dataset(path_to_file + '/' + filename, 'r')
 
 # GEO LOCATION
@@ -58,15 +63,12 @@ def getclosest_gridpoints_indices(lats, lons, desired_lat, desired_lon):
     return np.unravel_index(minindex_flattened, lats.shape)
 
 
-location_lat = 50.000       # <--- change to your desired location latitude, here
-location_lon = 11.799       # <--- change to your desired location longitude, here
-
 print("Searching grid point for location: lat: ", location_lat, ", lon: ", location_lon)
 grid_lat_index, grid_lon_index = getclosest_gridpoints_indices(latvals, lonvals, location_lat, location_lon)
 print("Closest grid point found is:", lat[grid_lat_index, grid_lon_index], lon[grid_lat_index, grid_lon_index])
 
 # THE MAIN VARIABLE: TAS, TEMPERATURE
-
+# TODO: read main variable from file name as in hostrada and heatwaves scipts
 tas = dataset.variables['tas']
 # Read value out of the netCDF file for temperature, all days, one location (closest grid point)
 tas_k = tas[:, grid_lat_index, grid_lon_index]
@@ -74,25 +76,33 @@ tas_k = tas[:, grid_lat_index, grid_lon_index]
 tas_degC = tas_k - 273.15
 
 # DATE
+print("reading times...")
+ds_times = dataset.variables['time']
+times_as_dates = netCDF4.num2date(ds_times[:], ds_times.units, ds_times.calendar)
 
-ds_times = dataset.variables['time'][:]
-# print(ds_times)
-
-# unit of 'time' in the dataset is: days since 1949-12-01 00:00:00
-# create the date_zero of the dataset as date
-december_1949 = date(1949, 12, 1)
+# print(times_as_dates)
 
 
-def get_time_from_dataset_as_date(index):
-    days_after_1949 = ds_times[index]
-    time_since_1949 = timedelta(days=days_after_1949)
-    return december_1949 + time_since_1949
+# WRITE TO FILE (or PRINT) DATE WITH ITS PREDICTED TEMPERATURE (or other climate variable)
+# if newfile write header, therefore:
+exists = os.path.exists(path_to_outfile)
+is_newfile = not exists
 
-# PRINT DATE WITH ITS PREDICTED TEMPERATURE
+os.makedirs(os.path.dirname(path_to_outfile), exist_ok=True)
 
-for i, temperature in enumerate(tas_degC):
+with open(path_to_outfile, 'a+') as outfile:
+    print("Writing to file ", path_to_outfile)
+    if is_newfile:
+        # write column headers
+        outfile.write("time; " + "tas [°C]" + "\n")
 
-    time_point = get_time_from_dataset_as_date(i)
-    print(time_point, "\t", '%7.4f %s' % (temperature, "°C"))
+    for i, climate_var in enumerate(tas_degC):
+        time_point = times_as_dates[i]
+        climate_var = round(climate_var, 1)
+
+        datetime_climateVar = '%s %s %7.1f %s' % (time_point, "; ", climate_var, "\n")
+        # print(datetime_climateVar)
+        outfile.write(datetime_climateVar)
+
 
 # print('%7.4f %s' % (tas_k, tas.units))
