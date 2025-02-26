@@ -20,7 +20,7 @@ if variable_name not in precipitation_variables:
     print("Your main variable must be one of ", precipitation_variables, ". It currently is: ", variable_name)
     exit()
 
-print("Converting file to dataset using main variable " + variable_name + "...")
+print("Converting file to dataset using main variable '" + variable_name + "'...")
 dataset = DerivedDataset(path_to_file, main_variable=variable_name)
 
 
