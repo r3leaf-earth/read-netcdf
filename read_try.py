@@ -1,3 +1,9 @@
+# READS TEXTFILES FROM TRY DATASET
+#
+# Infos about the dataset and link to the registration for downloading the files. In German!
+# https://www.dwd.de/DE/leistungen/testreferenzjahre/testreferenzjahre.html
+#
+
 import os
 # infile_original_try = sys.argv[1]
 path_to_try_files = '../../data/try/TRY_513564124162_Loebauer/'

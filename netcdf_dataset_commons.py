@@ -1,0 +1,80 @@
+import netCDF4
+
+
+def get_index_of_closest_entry(entries, value):
+    # Compute the squared distances (fast approximation)
+    distances = (entries - value) ** 2
+    # return index of min entry
+    return distances.argmin()
+
+
+class DerivedDataset:
+
+    def __init__(self, path_to_file, main_variable):
+        # PREPARE THE DATASET
+        dataset = netCDF4.Dataset(path_to_file, 'r')
+
+        # CHECK the main variable
+        dataset_variables = dataset.variables.keys()
+        if main_variable not in dataset_variables:
+            print("Your main variable must match the dataset variables: ",
+                  dataset_variables)
+            print("Your current main variable:", main_variable)
+            print("ABORTING... Please run again with the correct variable appended.")
+            exit()
+
+        # reading locations from the dataset
+        self.lats = dataset.variables['lat'][:]
+        self.lons = dataset.variables['lon'][:]
+
+        self.dataset_times = dataset.variables['time']
+        self.dataset_variable = dataset.variables[main_variable][:]
+        self.dataset_main_unit = dataset.variables[main_variable].units
+
+
+    # a method to find the index of the grid point closest to the desired location
+    def get_closest_gridpoints_indices(self, desired_lat, desired_lon):
+
+        lat_index = get_index_of_closest_entry(self.lats, desired_lat)
+        lon_index = get_index_of_closest_entry(self.lons, desired_lon)
+
+        return lat_index, lon_index
+
+
+    def get_coordinates_from_indices(self, location_coordinates):
+        return self.lats[location_coordinates[0]], self.lons[location_coordinates[1]]
+
+
+    # wrapper method to use for more than one location at once
+    def find_closests_grid_points_indices(self, desired_locations):
+
+        # collecting the indices on the grid closest to each desired location
+        closest_grid_points_indices = []
+
+        for location in desired_locations:
+            grid_point_for_location = self.get_closest_gridpoints_indices(location[0], location[1])
+            closest_grid_points_indices.append(grid_point_for_location)
+
+        return closest_grid_points_indices
+
+    # wrapper function to use for more than one tuple of indices at once
+    def get_many_pretty_coordinates(self, index_tuple_list, decimal_places=1):
+        pretty_coordinates = []
+        for indexlat_indexlon in index_tuple_list:
+            lat, lon = self.get_coordinates_from_indices(indexlat_indexlon)
+            rounded_coordinates = lat.round(decimal_places), lon.round(decimal_places)
+            pretty_coordinates.append(rounded_coordinates)
+        return pretty_coordinates
+
+    def get_pretty_times(self):
+        ds_times = self.dataset_times
+        times_as_dates = netCDF4.num2date(ds_times[:], ds_times.units, ds_times.calendar)
+        return times_as_dates
+
+    def get_pretty_data(self, grid_index):
+        values = self.dataset_variable
+        values_for_location_many_decimal_places = values[:, grid_index[0], grid_index[1]].compressed()
+        return values_for_location_many_decimal_places.round(1)
+
+    def get_dataset_main_unit(self):
+        return self.dataset_main_unit

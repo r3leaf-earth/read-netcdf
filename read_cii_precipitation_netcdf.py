@@ -1,0 +1,142 @@
+# READ PRECIPITATION NETCDF #
+#
+# Works for multiple locations and 4 precipitation variables.
+#
+# Note:
+#   Locations are hardcoded within the script. Also, it depends on another module within this repo. See imports.
+#   Change the locations to the ones you are interested in (lat, lon coordinates)
+#
+# Summary:
+#    * Reads precipitation variables from nc-files
+#    * writes them to a csv-file
+#
+# Dataset:
+#   Climate indicators for Europe from 1940 to 2100 derived from reanalysis and climate projections
+#   https://cds.climate.copernicus.eu/datasets/sis-ecde-climate-indicators
+#
+# Supported Variables (and their short names):
+#    * Total precipitation (tp for reanalysis, prAdjust for projections)
+#    * Maximum consecutive five-day precipitation (tp for reanalysis, prAdjust for projections)
+#    * Extreme precipitation total (data)
+#    * Frequency of extreme precipitation (data)
+
+# Output:
+#     Converting file to dataset using main variable 'data'...
+#     Searching grid point for location:  (54.09, 13.37)  --> found:  (54.0, 13.25)
+#     ...
+#     Searching grid point for location:  (49.01, 8.4)  --> found:  (49.0, 8.5)
+#     Writing to file  out/14_extreme_precipitation_total-reanalysis-monthly-grid-1940-2023-v1.csv
+#     1940-1   11.2;0.0;0.0;0.0;0.0
+#     1940-2   0.0;10.1;10.5;0.0;21.3
+#     1940-3   0.0;31.6;0.0;0.0;0.0
+#     1940-4   0.0;0.0;12.6;10.8;32.9
+#     ...
+#     2023-12          0.0;52.6;36.9;18.3;0.0
+#
+# Commandline user input:
+#    * path to datafile.nc
+#    * variable name (tp, prAdjust, data)
+#
+# Usage:
+# 	python read_cii_precipitation_netcdf.py /path/to/12_total_precipitation-reanalysis-yearly-grid-1940-2023-v1.0.nc tp
+#
+#############################################################
+
+# ToDO: update this. read addresses from locations.csv (already enriched with lat lon values)
+
+import os
+import sys
+
+from netcdf_dataset_commons import DerivedDataset
+
+# GET THE FILE
+path_to_file = sys.argv[1]
+
+# PREPARE THE DATASET
+variable_name = sys.argv[2]
+
+precipitation_variables = ["tp", "prAdjust", "data"]
+if variable_name not in precipitation_variables:
+    print("Your main variable must be one of ", precipitation_variables, ". It currently is: ", variable_name)
+    exit()
+
+print("Converting file to dataset using main variable '" + variable_name + "'...")
+dataset = DerivedDataset(path_to_file, main_variable=variable_name)
+
+
+# READ LOCATIONS FROM INPUT FILE (OR HARDCODE THEM HERE)
+# 54.09497,13.37462 Greifswald
+# 52.400882,13.055165 Potsdam
+# 51.368288/12.435543 Leipzig Heiterblick
+# 51.78195,11.14510 Harz
+# 49.009452/8.400044 Karlsruhe
+# 47.98036,7.90463 Freiburg???
+desired_locations = [(54.09,13.37), (52.40,13.06), (51.37,12.44), (51.78,11.15), (49.01,8.40)]
+location_names = ["Greifswald", "Potsdam", "Leipzig Heiterblick", "Harz", "Karlsruhe"]
+
+
+# FIND CLOSEST GRID POINTS
+closest_grid_indices = dataset.find_closests_grid_points_indices(desired_locations)
+found_grid_points = dataset.get_many_pretty_coordinates(index_tuple_list=closest_grid_indices, decimal_places=2)
+
+for i, location in enumerate(desired_locations):
+    print("Searching grid point for location: ", location,
+      " --> found: ", found_grid_points[i])
+
+# READ DATA INTO DICTIONARY (for all sample addresses)
+location_data = {}
+for indices in closest_grid_indices:
+    data = dataset.get_pretty_data(indices)
+    location_data[indices] = data
+
+dataset_times = dataset.get_pretty_times()
+
+# # PREPARE LINES FOR THE OUTPUT FILE
+infile_name_with_fileextension = path_to_file.split("/")[-1]
+infile_name = infile_name_with_fileextension.split(".")[0]
+path_to_outfile = "out/"+ infile_name + ".csv"
+
+locations_csv = ';'.join(str(a) for a in desired_locations)
+coloumn_headers = ';'.join(["time", locations_csv])
+location_line = ';'.join(location_names)
+unit = "[" + dataset.get_dataset_main_unit() + "]"
+
+yearly = "yearly" in infile_name
+monthly = "monthly" in infile_name
+
+# WRITE TO THE FILE
+os.makedirs(os.path.dirname(path_to_outfile), exist_ok=True)
+
+with open(path_to_outfile, 'a+') as outfile:
+    print("Writing to file ", path_to_outfile)
+
+    outfile.write("Main Variable: " + variable_name + " " + unit + "\n")
+    outfile.write("Name of data file: " + infile_name_with_fileextension + "\n")
+    outfile.write("\n")
+    outfile.write(";" + location_line + "\n")
+    outfile.write(coloumn_headers + "\n")
+
+    for i, times_as_dates in enumerate(dataset_times):
+        time = ""
+        if yearly:
+            time = times_as_dates.year
+        elif monthly:
+            time = f"{times_as_dates.year}-{times_as_dates.month}"
+        else:
+            time = times_as_dates
+            print("No monthly or yearly input? check formatting options for time")
+
+        values = []
+        for key in location_data:
+            each_locations_value = location_data[key][i]
+            values.append(each_locations_value)
+        values_for_time = ';'.join(str(a) for a in values)
+
+        # number_of_days_or_temperature_pretty = '%7.1f' % number_of_days
+
+        line = f"{time};{values_for_time}\n"
+        outfile.write(line)
+
+        if i < 5 or i > len(dataset_times) - 5:
+            print(time, "\t", values_for_time)
+
